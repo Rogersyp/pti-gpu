@@ -30,6 +30,8 @@ jobs:
     runs-on: ${{ vars.DIND_ARC_RUNNER_GITHUB }}
     outputs:
       repo_type: ${{ steps.detect.outputs.repo_type }}
+      runs_on: ${{ steps.detect.outputs.runs_on }}
+      container: ${{ steps.detect.outputs.container }}
 
     steps:
       - name: Detect repository type
@@ -37,19 +39,23 @@ jobs:
         run: |
           if [[ "${{ github.repository }}" == *"pti-gpu"* ]]; then
             echo "repo_type=external" >> $GITHUB_OUTPUT
+            echo "runner=ubuntu-latest" >> $GITHUB_OUTPUT
+            echo "container=ubuntu:24.04" >> $GITHUB_OUTPUT
             echo "Detected: External repository"
           else
             echo "repo_type=internal" >> $GITHUB_OUTPUT
+            echo "runner=${{ vars.DIND_ARC_RUNNER_GITHUB }}" >> $GITHUB_OUTPUT
+            echo "container=${{ vars.PTI_BARE_UBUNTU_24_04 }}" >> $GITHUB_OUTPUT
             echo "Detected: Internal repository"
           fi
           echo "Repository: ${{ github.repository }}"
 
   build:
     name: Build Documentation
-    runs-on: ${{ vars.DIND_ARC_RUNNER_GITHUB }}
+    runs-on: ${{ needs.detect-environment.outputs.runs_on }}
     needs: detect-environment
 
-    container: ${{ vars.PTI_BARE_UBUNTU_24_04 }} 
+    container: ${{ needs.detect-environment.outputs.container }}
     
 
     steps:
@@ -105,8 +111,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     # note: these only available to the inner repo, need to add them to the external repo's variables
-    runs-on: ${{ vars.DIND_ARC_RUNNER_GITHUB }}
-    container: ${{ vars.PTI_BARE_UBUNTU_24_04 }}
+    runs-on: ${{ needs.detect-environment.outputs.runs_on }}
+    container: ${{ needs.detect-environment.outputs.container }}
     
     needs: [detect-environment, build]
 
