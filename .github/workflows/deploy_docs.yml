@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'pti-*'                 # Build and deploy on version tags (for production)
+    branches:
+      - uid/yipengso/
   pull_request:
     branches:
       - master
