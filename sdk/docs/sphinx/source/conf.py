@@ -17,13 +17,14 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'PTI Library'
-copyright = '2024, Intel Corporation'
+project = 'PTI'
+copyright = '2026, Intel Corporation'
 author = 'Intel Corporation'
 
 # The full version, including alpha/beta/rc tags
-versionfile = open('../../../VERSION')
-release = versionfile.readline()
+# Commented out to avoid showing version in documentation title per oneAPI guidelines
+# versionfile = open('../../../VERSION')
+# release = versionfile.readline()
 
 # -- General configuration ---------------------------------------------------
 
@@ -82,7 +83,7 @@ highlight_language = 'c'
 # -- Extension configuration -------------------------------------------------
 
 import subprocess
-subprocess.call('make clean', shell=True)
+# subprocess.call('make clean', shell=True)
 subprocess.call('cd ../../doxygen ; doxygen ', shell=True)
 
 breathe_projects = { "ptilib": "../../doxygen/build/xml/" }

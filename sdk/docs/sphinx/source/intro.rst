@@ -2,6 +2,9 @@
 Introduction
 #####################
 
+.. warning::
+   **DRAFT DOCUMENTATION** - This documentation is currently in draft status and subject to change.
+
 This is the PTI SDK library.
 
 PTI SDK will be a library for developing profiling tools for applications built on top of oneAPI and running on Intel GPUs.

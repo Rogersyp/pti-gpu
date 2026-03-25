@@ -12,9 +12,8 @@
    :caption: Get Started
    :maxdepth: 3
 
-   build
    install
-   linking
+   build
    quickstart
    samples
 
@@ -23,4 +22,15 @@
    :maxdepth: 2
 
    devguide
+   metrics_guide
+   communication_tracing
+   callback_api
+   linking
+
+.. toctree::
+   :caption: Developer Reference
+   :maxdepth: 2
+
+   view_api_ref
+   metrics_api_ref
 

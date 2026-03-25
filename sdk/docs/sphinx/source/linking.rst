@@ -2,6 +2,9 @@
 Linking
 =========
 
+.. warning::
+   **DRAFT DOCUMENTATION** - This documentation is currently in draft status and subject to change.
+
 Use CMake ``find_package``
 
 .. code-block:: cmake
