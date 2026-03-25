@@ -5,7 +5,7 @@ on:
     tags:
       - 'pti-*'                 # Build and deploy on version tags (for production)
     branches:
-      - uid/yipengso/
+      - uid/yipengso/doc
   pull_request:
     branches:
       - master
