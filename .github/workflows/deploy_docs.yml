@@ -59,22 +59,18 @@ jobs:
     
 
     steps:
-      - name: Clean-up
-        run: rm -rf *
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install system dependencies
         run: |
-          # Update package lists
-          apt-get update
-
-          # Install lsb-release (needed by setup-python action)
-          apt-get install -y lsb-release
-
-          # Install doxygen, graphviz, cmake, make, and ninja
-          apt-get install -y doxygen graphviz cmake make ninja-build
+          apt-get update && apt-get install -y \
+            lsb-release \
+            doxygen \
+            graphviz \
+            cmake \
+            make \
+            ninja-build
 
       - name: Python Environment Setup
         uses: astral-sh/setup-uv@v6
@@ -110,10 +106,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
-    # note: these only available to the inner repo, need to add them to the external repo's variables
     runs-on: ${{ needs.detect-environment.outputs.runs_on }}
-    container: ${{ needs.detect-environment.outputs.container }}
-    
+
     needs: [detect-environment, build]
 
     # uncomment this line to enable deployment only on tags (for production)
