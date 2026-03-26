@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - 'pti-*'                 # Build and deploy on version tags (for production)
-    branches:
-      - uid/yipengso/doc
   pull_request:
     branches:
       - master
@@ -25,37 +23,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  detect-environment:
-    name: Detect Repository Environment
-    runs-on: ${{ vars.DIND_ARC_RUNNER_GITHUB }}
-    outputs:
-      repo_type: ${{ steps.detect.outputs.repo_type }}
-      runs_on: ${{ steps.detect.outputs.runs_on }}
-      container: ${{ steps.detect.outputs.container }}
-
-    steps:
-      - name: Detect repository type
-        id: detect
-        run: |
-          if [[ "${{ github.repository }}" == *"pti-gpu"* ]]; then
-            echo "repo_type=external" >> $GITHUB_OUTPUT
-            echo "runs_on=ubuntu-latest" >> $GITHUB_OUTPUT
-            echo "container=ubuntu:24.04" >> $GITHUB_OUTPUT
-            echo "Detected: External repository"
-          else
-            echo "repo_type=internal" >> $GITHUB_OUTPUT
-            echo "runs_on=${{ vars.DIND_ARC_RUNNER_GITHUB }}" >> $GITHUB_OUTPUT
-            echo "container=${{ vars.PTI_BARE_UBUNTU_24_04 }}" >> $GITHUB_OUTPUT
-            echo "Detected: Internal repository"
-          fi
-          echo "Repository: ${{ github.repository }}"
-
   build:
     name: Build Documentation
-    runs-on: ${{ needs.detect-environment.outputs.runs_on }}
-    needs: detect-environment
-
-    container: ${{ needs.detect-environment.outputs.container }}
+    runs-on: ${{ contains(github.repository, 'pti-gpu') && 'ubuntu-latest' || vars.DIND_ARC_RUNNER_GITHUB }}
+    container: ${{ contains(github.repository, 'pti-gpu') && 'ubuntu:24.04' || vars.PTI_BARE_UBUNTU_24_04 }}
     
 
     steps:
@@ -106,12 +77,10 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
-    runs-on: ${{ needs.detect-environment.outputs.runs_on }}
+    runs-on: ${{ contains(github.repository, 'pti-gpu') && 'ubuntu-latest' || vars.DIND_ARC_RUNNER_GITHUB }}
+    needs: build
 
-    needs: [detect-environment, build]
-
-    # uncomment this line to enable deployment only on tags (for production)
-    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/pti-')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/pti-')
 
     steps:
       - name: Deploy to GitHub Pages
@@ -122,6 +91,5 @@ jobs:
         run: |
           echo "Documentation deployed successfully"
           echo "Repository: ${{ github.repository }}"
-          echo "Repository Type: ${{ needs.detect-environment.outputs.repo_type }}"
           echo "Tag: ${{ github.ref_name }}"
           echo "Deployment URL: ${{ steps.deployment.outputs.page_url }}"
