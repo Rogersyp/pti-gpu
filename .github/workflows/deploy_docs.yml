@@ -80,7 +80,7 @@ jobs:
     runs-on: ${{ contains(github.repository, 'pti-gpu') && 'ubuntu-latest' || vars.DIND_ARC_RUNNER_GITHUB }}
     needs: build
 
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/pti-')
+    # if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/pti-')) || github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Deploy to GitHub Pages
