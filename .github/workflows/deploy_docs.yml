@@ -62,7 +62,10 @@ jobs:
       - name: Build documentation with CMake
         working-directory: sdk
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTING=OFF \
+            -DPTI_BUILD_TESTING=OFF \
+            -DPTI_BUILD_SAMPLES=OFF
           cmake --build build --target docs
 
       - name: Add .nojekyll file
