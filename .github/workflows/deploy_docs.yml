@@ -43,7 +43,9 @@ jobs:
             graphviz \
             cmake \
             make \
-            ninja-build
+            ninja-build \
+            g++ \
+            git
 
       - name: Python Environment Setup
         uses: astral-sh/setup-uv@v6
@@ -57,21 +59,21 @@ jobs:
           uv pip install --upgrade pip
           uv pip install -r sdk/docs/requirements.txt
 
-      - name: Build documentation
-        working-directory: sdk/docs/sphinx
+      - name: Build documentation with CMake
+        working-directory: sdk
         run: |
-          make clean
-          make html
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --target docs
 
       - name: Add .nojekyll file
         run: |
           # Prevent Jekyll processing on GitHub Pages
-          touch sdk/docs/sphinx/build/html/.nojekyll
+          touch sdk/build/docs/sphinx/build/html/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: sdk/docs/sphinx/build/html
+          path: sdk/build/docs/sphinx/build/html
 
   deploy:
     name: Deploy to GitHub Pages
