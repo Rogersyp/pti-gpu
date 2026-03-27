@@ -26,11 +26,25 @@ set(PTI_SPHINX_OUTPUT_DIR "${PTI_DOCS_OUTPUT_DIR}/sphinx/build/html")
 set(PTI_DOXYGEN_INDEX "${PTI_DOXYGEN_OUTPUT_DIR}/html/index.html")
 set(PTI_SPHINX_INDEX "${PTI_SPHINX_OUTPUT_DIR}/index.html")
 
+# Collect source files for dependency tracking
+file(GLOB_RECURSE PTI_HEADERS "${PROJECT_SOURCE_DIR}/include/*.h")
+file(GLOB_RECURSE SPHINX_SOURCES "${PTI_SPHINX_SOURCE_DIR}/source/*.rst")
+
+# Configure Doxyfile with CMake-controlled output directory
+configure_file(
+  ${PTI_DOXYGEN_SOURCE_DIR}/Doxyfile.in
+  ${PROJECT_BINARY_DIR}/Doxyfile
+  @ONLY)
+
 # Custom command to build Doxygen documentation
 add_custom_command(
   OUTPUT ${PTI_DOXYGEN_INDEX}
-  COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${PTI_DOXYGEN_OUTPUT_DIR}
+  COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
   WORKING_DIRECTORY ${PTI_DOXYGEN_SOURCE_DIR}
+  DEPENDS ${PROJECT_BINARY_DIR}/Doxyfile
+          ${PTI_DOXYGEN_SOURCE_DIR}/Doxyfile.in
+          ${PTI_HEADERS}
   COMMENT "Generate Doxygen documentation"
   VERBATIM)
 
@@ -46,6 +60,8 @@ add_custom_command(
   COMMAND ${SPHINX_BUILD} -b html ${PTI_SPHINX_SOURCE_DIR}/source ${PTI_SPHINX_OUTPUT_DIR}
   WORKING_DIRECTORY ${PTI_SPHINX_SOURCE_DIR}
   DEPENDS ${PTI_DOXYGEN_INDEX}
+          ${SPHINX_SOURCES}
+          ${PTI_SPHINX_SOURCE_DIR}/source/conf.py
   COMMENT "Generate Sphinx documentation"
   VERBATIM)
 

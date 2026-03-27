@@ -22,9 +22,9 @@ copyright = '2026, Intel Corporation'
 author = 'Intel Corporation'
 
 # The full version, including alpha/beta/rc tags
-# Commented out to avoid showing version in documentation title per oneAPI guidelines
-# versionfile = open('../../../VERSION')
-# release = versionfile.readline()
+with open('../../../VERSION') as versionfile:
+    release = versionfile.readline().strip()
+    version = release  # Short version
 
 # -- General configuration ---------------------------------------------------
 
@@ -69,6 +69,9 @@ html_theme_options = {
 }
 html_logo = '_static/oneAPI-rgb-rev-100.png'
 html_favicon = '_static/favicons.png'
+
+# Override title to hide version from header (per oneAPI guidelines)
+html_title = "PTI Documentation"
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
