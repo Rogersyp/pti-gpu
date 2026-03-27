@@ -57,7 +57,9 @@ add_custom_target(
 # Custom command to build Sphinx documentation
 add_custom_command(
   OUTPUT ${PTI_SPHINX_INDEX}
-  COMMAND ${SPHINX_BUILD} -b html ${PTI_SPHINX_SOURCE_DIR}/source ${PTI_SPHINX_OUTPUT_DIR}
+  COMMAND ${SPHINX_BUILD} -b html
+          -D breathe_projects.ptilib=${PTI_DOXYGEN_OUTPUT_DIR}/xml
+          ${PTI_SPHINX_SOURCE_DIR}/source ${PTI_SPHINX_OUTPUT_DIR}
   WORKING_DIRECTORY ${PTI_SPHINX_SOURCE_DIR}
   DEPENDS ${PTI_DOXYGEN_INDEX}
           ${SPHINX_SOURCES}

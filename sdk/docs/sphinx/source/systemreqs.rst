@@ -40,7 +40,7 @@ OS Specific
      - Linux
      - Windows
    * - `CMake <https://cmake.org/>`_
-     - version 3.12 and above. For presets, >= 3.20
+     - version 3.14 and above. For presets, >= 3.20
      - version >= 3.23
    * - `Ninja <https://github.com/ninja-build/ninja>`_
      - version >= 1.10.1 (optional)
